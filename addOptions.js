@@ -1,9 +1,6 @@
-console.log('works')
-
 jQuery('input').on('change', (e) => {
     const filter_target = e.target.checked;
     console.log(filter_target)
-    //alert('Value changed')
 
     let data = {
         action: 'add_options',
@@ -18,11 +15,9 @@ jQuery('input').on('change', (e) => {
             data: data,
             success: function (response) {
                 console.log(response)
-                alert('works');
             },
             error: function (response) {
-                console.log(response)
-                alert('error');
+                console.log(response)  
             }
         })
     }
