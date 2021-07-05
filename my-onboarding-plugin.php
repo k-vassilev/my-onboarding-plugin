@@ -12,7 +12,7 @@ if(!defined('ABSPATH')) {
     exit;
 }
 
-$is_plugin_enabled = get_option('onboarding');
+$is_plugin_enabled = get_option('onboarding_enabled');
 
 // Adds a menu element to the admin_menu for the plugin
 add_action('admin_menu', 'add_plugin_menu');
@@ -24,7 +24,7 @@ function add_plugin_menu(){
 // Adds checkbox
 function ob_add_filter(){
     //get the current option value from db
-    $is_plugin_enabled = get_option('onboarding');
+    $is_plugin_enabled = get_option('onboarding_enabled');
     $form_check = "";
 
     if($is_plugin_enabled == 'true'){
@@ -104,7 +104,7 @@ function add_options() {
     $savedOption = 'false';
    };
 
-    update_option('onboarding',$savedOption);
+    update_option('onboarding_enabled',$savedOption);
     wp_send_json_success();
     wp_die(); 
 };
