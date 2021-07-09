@@ -69,9 +69,9 @@ if($is_plugin_enabled == 'true'){
     };
     
     
-    // Adds a hidden div after the first </p>
+    //Adds a hidden div after the first </p>
 
-    add_filter('the_content', 'add_hidden_div');
+    add_filter('the_content', 'add_hidden_div', 50);
     
     function add_hidden_div($content) { 
         if(get_post_type() == 'student'){
@@ -85,7 +85,7 @@ if($is_plugin_enabled == 'true'){
 
     // Adds a paragrah and a hidden div
 
-    add_filter('the_content', 'add_new_paragraph');
+    add_filter('the_content', 'add_new_paragraph', 60);
 
     function add_new_paragraph($content) {
         if(get_post_type() == 'student'){
