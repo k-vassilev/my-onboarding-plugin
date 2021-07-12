@@ -4,22 +4,27 @@
  * Description: A very nice onboarding plugin to filter content
  * Author: Kristian Vassilev
  * Version: 1.0.0
+ *
+ * @package   onboarding-plugin
  */
 
-
 /**  First line of defense */
-if (!defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 
 
-/**  Adds a menu element to the admin_menu for the plugin */
+/**  Adds an action to initiate adding menu element to the admin_menu for the plugin */
 add_action( 'admin_menu', 'add_plugin_menu' );
 
-function add_plugin_menu(){
-	// title, name in menu, capability, title of page inside, name of function, dash-icon.
-	add_menu_page('My Onboarding', 'My Onboarding', 'administrator', 'ob-filter', 'ob_add_filter', 'dashicons-palmtree');
+/**
+ * Adds the plugin to the menu
+ *
+ * @return void
+ */
+function add_plugin_menu() {
+	add_menu_page( 'My Onboarding', 'My Onboarding', 'administrator', 'ob-filter', 'ob_add_filter', 'dashicons-palmtree' );
 };
 
 
@@ -27,16 +32,21 @@ function add_plugin_menu(){
 /**  Adds checkbox and checks whether the plugin is enabled */
 $is_plugin_enabled = get_option( 'onboarding_enabled' );
 
-function ob_add_filter(){
+/**
+ * Adds an enable/disable filter to the plugin and checks its value
+ *
+ * @return void
+ */
+function ob_add_filter() {
 
 	// get the current option value from db.
 	$is_plugin_enabled = get_option( 'onboarding_enabled' );
-	$form_check = "";
+	$form_check        = '';
 
-	if ( $is_plugin_enabled == 'true' ) {
-		$form_check = "checked";
+	if ( 'true' === $is_plugin_enabled ) {
+		$form_check = 'checked';
 	} else {
-		$form_check = "";
+		$form_check = '';
 	};
 
 	$ob_check = '
@@ -45,19 +55,24 @@ function ob_add_filter(){
             <input type="checkbox" id="ob-filter" name="ob-filter" ' . $form_check;'>
             <label for="ob-filter">Filters Enabled</label>
         </div>';
-	echo $ob_check;
+	echo ( $ob_check );
 };
 
 
 // Makes sure the plugin runs only if enabled.
-if ( $is_plugin_enabled == 'true' ) {
+if ( 'true' === $is_plugin_enabled ) {
 
 
 	// Adds a string to the wp_head element.
-	add_action( "wp_head", "onboarding_plugin" );
+	add_action( 'wp_head', 'onboarding_plugin' );
 
-	function onboarding_plugin(){
-		if ( get_post_type() == 'student' ) {
+	/**
+	 * Adds plugin creator`s credentials on student post type
+	 *
+	 * @return void
+	 */
+	function onboarding_plugin() {
+		if ( get_post_type() === 'student' ) {
 			echo 'Onboarding Filter by: kvasilev';
 		};
 	};
@@ -66,12 +81,18 @@ if ( $is_plugin_enabled == 'true' ) {
 	// Adds a hidden div after the first </p>.
 	add_filter( 'the_content', 'add_hidden_div', 50 );
 
+	/**
+	 * Adds a hidden div after the closing tag </p>
+	 *
+	 * @param string $content of the wp post.
+	 * @return void
+	 */
 	function add_hidden_div( $content ){
-		if ( get_post_type() == 'student' ) {
+		if ( get_post_type() === 'student' ) {
 			$content = str_replace( '</p>', '</p><div style="display:none;">hidden div</div>', $content );
-			echo $content;
+			echo ( $content );
 		} else {
-			echo $content;
+			echo ( $content );
 		};
 	};
 
@@ -79,33 +100,50 @@ if ( $is_plugin_enabled == 'true' ) {
 	// Adds a paragrah and a hidden div.
 	add_filter( 'the_content', 'add_new_paragraph', 60 );
 
+	/**
+	 * Adds new paragraph with hidden div after the content
+	 *
+	 * @param string $content of the wp post.
+	 * @return void
+	 */
 	function add_new_paragraph( $content ) {
-		if( get_post_type() === 'student' ) {
+		if ( get_post_type() === 'student' ) {
 			$content = '<p>Generic paragraph</p>';
 			$content = str_replace( '<p>Generic paragraph</p>', '<p>Generic paragraph <div style="display:none;">hidden div</div></p>', $content );
-			echo esc_html( $content );
+			echo ( $content );
 		} else {
-			echo esc_html( $content );
+			echo ( $content );
 		}
 	};
 
 	// Emailing functionality upon profile update.
 	add_action( 'profile_update', 'update_profile_email' );
 
-	function update_profile_email(){
-		$myUser = get_currentuserinfo();
+	/**
+	 * Sends and email upon profile update
+	 *
+	 * @return void
+	 */
+	function update_profile_email() {
+		$my_user = wp_get_current_user();
 
 		// wp_mail(email-to, email-subject, email-message).
-		wp_mail( 'kvasilev@devrix.com', 'New profile update', 'Profile with user name ' . $myUser->user_login . ' has been updated.' );
+		wp_mail( 'kvasilev@devrix.com', 'New profile update', 'Profile with user name ' . $my_user->user_login . ' has been updated.' );
 	};
 
-	// Adds a nav element (profile page) to the current main menu if user is logged.
+	// Adds a new filter to the menu for showing (profile page).
 	add_filter( 'wp_nav_menu_items', 'add_profile_page' );
 
-	function add_profile_page($items){
-		if ( is_user_logged_in() && get_post_type() == 'student' ) {
-			$profilePageLink = admin_url( 'profile.php' );
-			return $items .= '<li><a href="' . $profilePageLink . '" class = "menu-item" >Profile Settings</a></li>';
+	/**
+	 * Adds profile page if user is logged in.
+	 *
+	 * @param string $items are the menu.
+	 * @return void
+	 */
+	function add_profile_page( $items ) {
+		if ( is_user_logged_in() && get_post_type() === 'student' ) {
+			$profile_page_link = admin_url( 'profile.php' );
+			return $items     .= '<li><a href="' . $profile_page_link . '" class = "menu-item" >Profile Settings</a></li>';
 		} else {
 			return $items;
 		}
@@ -113,7 +151,7 @@ if ( $is_plugin_enabled == 'true' ) {
 };
 
 /**  Imports and starts the addOption.js */
-function add_onboarding_script(){
+function add_onboarding_script() {
 	wp_enqueue_script( 'addOptions', plugins_url( 'addOptions.js', __FILE__ ), array( 'jquery' ), false, true );
 	wp_localize_script( 'addOptions', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
 };
@@ -123,17 +161,17 @@ add_action( 'wp_ajax_add_options', 'add_options' );
 
 
 /** Adds options to save the plugin enable/disable state into the db */
-function add_options(){
-	$currentValue =  $_POST['ob_filter'];
-	$savedOption  = '';
+function add_options() {
+	$current_value = $_POST['ob_filter'];
+	$saved_option  = '';
 
-	if ( $currentValue == 'true' ) {
-		$savedOption = 'true';
+	if ( 'true' === $current_value ) {
+		'true' === $saved_option;
 	} else {
-		$savedOption = 'false';
+		'false' === $saved_option;
 	};
 
-	update_option( 'onboarding_enabled', $savedOption );
+	update_option( 'onboarding_enabled', $saved_option );
 	wp_send_json_success();
 	wp_die();
 };
