@@ -38,7 +38,6 @@ $is_plugin_enabled = get_option( 'onboarding_enabled' );
  * @return void
  */
 function ob_add_filter() {
-
 	// get the current option value from db.
 	$is_plugin_enabled = get_option( 'onboarding_enabled' );
 	$form_check        = '';
@@ -162,13 +161,13 @@ add_action( 'wp_ajax_add_options', 'add_options' );
 
 /** Adds options to save the plugin enable/disable state into the db */
 function add_options() {
-	$current_value = $_POST['ob_filter'];
+	$current_value = wp_unslash( sanitize_text_field( $_POST['ob_filter'] ) );
 	$saved_option  = '';
 
 	if ( 'true' === $current_value ) {
-		'true' === $saved_option;
+		$saved_option = 'true';
 	} else {
-		'false' === $saved_option;
+		$saved_option = 'false';
 	};
 
 	update_option( 'onboarding_enabled', $saved_option );
