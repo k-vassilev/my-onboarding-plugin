@@ -166,8 +166,6 @@ function add_options() {
 
 	if ( 'true' === $current_value ) {
 		$saved_option = 'true';
-	} else {
-		$saved_option = 'false';
 	};
 
 	update_option( 'onboarding_enabled', $saved_option );
