@@ -125,9 +125,9 @@ if ( 'true' === $ob_is_plugin_enabled ) {
 	 */
 	function ob_update_profile_email() {
 		$my_user = wp_get_current_user();
-
 		// wp_mail(email-to, email-subject, email-message).
-		wp_mail( 'kvasilev@devrix.com', 'New profile update', 'Profile with user name ' . $my_user->user_login . ' has been updated.' );
+		$admin_email = get_option( 'admin_email' );
+		wp_mail( $admin_email, 'New profile update', 'Profile with user name ' . $my_user->user_login . ' has been updated.' );
 	};
 
 	// Adds a new filter to the menu for showing (profile page).
